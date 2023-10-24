@@ -1,0 +1,34 @@
+ \documentclass[
+    9pt,            
+    techreport,       
+    affiltop,       
+]{art}
+
+\input{metadata.tex}
+\input{macros.tex}
+
+\usepackage{wasysym}
+\usepackage{tikz}
+\usetikzlibrary{graphs}
+\usetikzlibrary{trees}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+\input{intro.tex}
+\input{variants.tex}
+\input{preproc.tex}
+\input{tract_query.tex}
+\input{tract_csp.tex}
+% \input{prog_query.tex}
+\input{csp_intents.tex}
+\input{dist.tex}
+% \input{solve_net.tex}
+\input{acknowledgements.tex}
+
+\bibliography{ref.bib}
+
+\end{document}

@@ -1,0 +1,317 @@
+\section{Intents as CSPs}\label{sec:csp-intents}
+
+In this section, we'd like to start giving concrete formalizations of intents using CSPs. We will not aim to thoroughly cover all intent examples but will stick to some basic, non-trivial examples that have been formalized as part of Anoma's "Kudos" sub-project.
+
+\subsection{Intents as ILP programs}\label{sec:ilp-intents}
+
+An intent, for the purposes of our formalization, will be conceptualized as a stated desire to obtain some collection of resources given a stated ability to trade some collection of other resources. Issues like verifiable ownership will not be dealt with here; rather, we concern ourselves only with the collection of stated desires that may be used to formulate trades.
+
+Let's start by considering a specific kind of intent. It consists of partial transactions containing the following data;
+
+\begin{itemize}
+    \item $Wh_i$: A float weighing intent $i$.
+    \item $H_{i, r}$: A natural number indicating how much of resource $r$ intent $i$ is willing to trade.
+    \item $W_{i, r}$: A natural number indicating how much of resource $r$ intent $i$ needs to initiate a trade.
+    \item $V_{i, r}$: A float indicating the value intent $i$ gives to resource $r$.
+\end{itemize}
+
+We are interpreting a partial transaction as stating that we intend to trade, at most, some collection of resources, specified by the $H$s, for exactly some other collection of resources, specified by $W$s.
+
+The goal can be stated as best satisfying the intent. We may formalize this notion of intents within mixed integer programming. Additionally, for each resource in each intent, there will be an integer indicating how much of each resource was traded away. For each intent, $i$, and each resource, $r$, there will be the following data;
+
+\begin{itemize}
+    \item $\text{SAT}_i$:  boolean indicating if intent $i$ is satisfied.
+    \item $\text{GOT}_{i, r}$: a natural number indicating how many $r$s were received by intent $i$.
+    \item $\text{GAVE}_{i, r}$: a natural number indicating how many $r$s were spent by intent $i$.
+\end{itemize}
+
+We then turn these into a full problem by asserting appropriate constraints. Firstly, if an intent is satisfied, then the amount given and gotten must reflect this;
+
+\begin{equation}
+    \text{GOT}_{i, r} \leq \text{SAT}_i \times W_{i, r}
+\end{equation}
+
+\begin{equation}
+    \text{GAVE}_{i, r} = \text{SAT}_i \times H_{i, r}
+\end{equation}
+
+Further, the total resources transferred must be balanced;
+
+\begin{equation}
+    \sum_{i} \text{GOT}_{i, r} = \sum_{i} \text{GAVE}_{i, r}
+\end{equation}
+
+Lastly, we must cast this as a constraint optimization problem by asserting a utility function. We can simply sum the differences in traded resources, weighted by the intent;
+
+\begin{equation}
+    U := \sum_i Wh_i \left(\left(\sum_r V_{i, r} \text{GOT}_{i, r}\right) - \left(\sum_r V_{i, r} \text{GAVE}_{i, r}\right)\right)
+\end{equation}
+
+This is, of course, just one way of interpreting "best satisfying". In essence, this attempts to get the best aggregate deal, as subjectively interpreted by each intent, weighted by some objective weight indicating the importance of the intent.
+
+This is, of course, just one kind of intent. To demonstrate an alternative, we may consider a different kind of exclusive-weighted partial transaction. These contain the same data as before, but we can now only trade one collection of resources for another. We are reinterpreting the intents as stating we intend to trade one of a collection of resources, specified by the $H$s, for exactly one from some other collection of resources, specified by $W$s. To formalize this, we now have the following data for each intent;
+
+\begin{itemize}
+    \item $\text{TR}_{i, r}$:  boolean indicating if intent $i$ traded resource $r$.
+    \item $\text{RC}_{i, r}$:  boolean indicating if intent $i$ received resource $r$.
+    \item $\text{GOT}_{i, r}$: a natural number indicating how many $r$s were received by intent $i$.
+    \item $\text{GAVE}_{i, r}$: a natural number indicating how many $r$s were spend by intent $i$.
+\end{itemize}
+
+To enforce exclusivity, we must ensure that, at most one of the $\text{TR}_{i, r}$ and $\text{RC}_{i, r}$ booleans is true;
+
+\begin{equation}
+    \sum_r \text{TR}_{i, r} \leq 1
+\end{equation}
+
+\begin{equation}
+    \sum_r \text{RC}_{i, r} \leq 1
+\end{equation}
+
+and, furthermore, we need to enforce that an intent won't trade something if it doesn't receive something.
+
+\begin{equation}
+    \sum_r \text{TR}_{i, r} = \sum_r \text{RC}_{i, r}
+\end{equation}
+
+The constraints for each partial trade now become;
+
+\begin{equation}
+    \text{GOT}_{i, r} \leq \text{RC}_{i, r} \times W_{i, r}
+\end{equation}
+
+\begin{equation}
+    \text{GAVE}_{i, r} = \text{TR}_{i, r} \times H_{i, r}
+\end{equation}
+
+Everything else can stay the same, but we are now enforcing exclusivity. We can further vary this, and we will fuse these two notions of partial transactions in the demo given in section \ref{sec:scip-example}.
+
+
+% \subsection{Linear Logic and Intents}\label{sec:linear-logic-intents}
+
+% TODO
+
+\subsection{Example: Optimizing Intents with SCIP}\label{sec:scip-example}
+
+With a clear idea to formalize, we can create an actual intent optimizer using an off-the-shelf solver. For this demo, we will use the SCIP solver through the Google OR Tools library within Python. We may begin by importing the library and declaring our solver;
+
+\begin{minted}{python}
+from ortools.linear_solver import pywraplp
+
+# Create the solver
+solver = pywraplp.Solver.CreateSolver('SCIP')
+\end{minted}
+
+The notion of intent we will formalize will be a combination of the two notions described in section \ref{sec:ilp-intents}. Each partial transaction will have an exclusive set of proposed haves and wants. Each of those will have a collection of resources that can be traded.
+
+We can start by defining a data formalization. Each intent will consist of a partial transaction that possesses
+
+\begin{itemize}
+    \item $Wh_i$: A float weighing intent $i$.
+    \item $H_{i, o, r}$: A natural number indicating how much of resource $r$ intent $i$ is willing to trade at option $o$.
+    \item $W_{i, o, r}$: A natural number indicating how much of resource $r$ intent $i$ needs to initiate a trade with option $o$.
+    \item $V_{i, r}$: A float indicating the value intent $i$ gives to resource $r$.
+\end{itemize}
+
+We can use this as a guide to implement example partial transactions. We will use the following in this demo;
+
+\begin{minted}{python}
+# Define available resources
+resources = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+
+# Define test intents
+# Note: 'have_exprs' and 'want_exprs' are lists representing the 'xor' expressions
+# For example, 'have_exprs': [{'a': 3, 'b': 5}, {'a': 2, 'd': 1}] 
+# means "choose (3a or 5b) xor (2a or 1d)"
+intents = [
+    {'weight': 1.0, 
+     'have': [{'a': 3, 'b': 4, 'c': 5}, {'a': 2}, {'e': 3, 'g': 1}],
+     'want': [{'d': 3}, {'f': 1}],
+     'r_weights': { 'a': 1.0, 'b': 0.5, 'c': 0.6, 'd': 0.9
+                  , 'e': 0.5, 'f': 10.0, 'g': 0.85}
+     },
+    {'weight': 2.0, 
+     'have': [{'c': 2, 'd': 1}, {'e': 4}, {'f': 2}],
+     'want': [{'a': 2, 'b':1}, {'b': 1, 'f': 2}],
+     'r_weights': { 'a': 0.7, 'b': 0.2, 'c': 0.9, 'd': 0.9, 'e': 0.85, 'f': 1.0}
+    },
+]
+\end{minted}
+
+We can further declare the variables used to actually formalize the constraint problem. We will have the following;
+
+\begin{itemize}
+    \item $\text{TR}_{i, o}$:  boolean indicating if option $o \leq Oh$ was selected in intent $i$.
+    \item $\text{RC}_{i, o}$:  boolean indicating if option $o \leq Ow$ was selected in intent $i$.
+    \item $\text{GOT}_{i, r}$: a natural number indicating how many $r$s were received by intent $i$.
+    \item $\text{GAVE}_{i, r}$: a natural number indicating how many $r$s were spend by intent $i$.
+\end{itemize}
+
+These can be implemented by declaring each list of variables, along with their domains, like so;
+
+\begin{minted}{python}
+have_choice_vars = []
+want_choice_vars = []
+have_qty_vars = []
+want_qty_vars = []
+
+# Declare variables
+for i, intent in enumerate(intents):
+    # Boolean variables for each "have" option
+    have_bools = [solver.BoolVar(f"have_choice_{i}_{j}") for j in range(len(intent['have']))]
+    have_choice_vars.append(have_bools)
+    
+    # Boolean variables for each "want" option
+    want_bools = [solver.BoolVar(f"want_choice_{i}_{k}") for k in range(len(intent['want']))]
+    want_choice_vars.append(want_bools)
+    
+    # Integer variables for each resource traded away
+    have_qty = {r: solver.IntVar(0, max_qty, f"have_qty_{i}_{r}")\
+                for option in intent['have'] for r, max_qty in option.items()}
+    have_qty_vars.append(have_qty)
+    
+    # Integer variables for each resource received
+    want_qty = {r: solver.IntVar(0, qty, f"want_qty_{i}_{r}")\
+                for option in intent['want'] for r, qty in option.items()}
+    want_qty_vars.append(want_qty)
+\end{minted}
+
+We may then declare the constraints which guarantee that only one option is chosen and that a want option is chosen if and only if a have option is chosen.
+
+\begin{equation}
+    \sum_o \text{TR}_{i, o} \leq 1
+\end{equation}
+
+\begin{equation}
+    \sum_o \text{RC}_{i, o} \leq 1
+\end{equation}
+
+\begin{equation}
+    \sum_o \text{TR}_{i, o} = \sum_o \text{RC}_{i, o}
+\end{equation}
+
+This can be implemented as
+
+\begin{minted}{python}
+# Declare constraints
+# For each intent, we'll ensure that at most one "have" and one "want"
+# boolean can be true, and they must coincide.
+for i in range(len(intents)):
+    solver.Add(solver.Sum(have_choice_vars[i]) <= 1)
+    solver.Add(solver.Sum(want_choice_vars[i]) <= 1)
+    solver.Add(solver.Sum(have_choice_vars[i]) == solver.Sum(want_choice_vars[i]))
+\end{minted}
+
+Next, we must ensure the traded quantities are appropriate. The quantities given away must max out at the quantity stated within the have option chosen;
+
+\begin{equation}
+    \text{GAVE}_{i, r} \leq \sum_{o} \text{TR}_{i, o} \times H_{i, o, r}
+\end{equation}
+
+and the quantities got have to be exactly those specified by the chosen want option;
+
+\begin{equation}
+    \text{GOT}_{i, r} = \sum_{o} \text{RC}_{i, o} \times W_{i, o, r}
+\end{equation}
+
+We can implement these constraints as;
+
+\begin{minted}{python}
+# Link "have" and "want" quantities to their choice variables
+for i, intent in enumerate(intents):
+    for j, have_option in enumerate(intent['have']):
+        for r in resources_set(intent, 'have'):
+            solver.Add(have_qty_vars[i][r] <=\
+                sum(option.get(r, 0) * have_choice_vars[i][j]
+                    for j, option in enumerate(intent['have'])))
+    
+    for k, want_option in enumerate(intent['want']):
+        for r in resources_set(intent, 'want'):
+            solver.Add(want_qty_vars[i][r] ==\
+                sum(option.get(r, 0) * want_choice_vars[i][j] 
+                    for j, option in enumerate(intent['want'])))
+\end{minted}
+
+where \verb|resources_set| is a function that calculates the set of resources within an intent;
+
+
+\begin{minted}{python}
+def resources_set(intent, key):
+    return list(set(resource for option in intent[key] for resource in option.keys()))
+\end{minted}
+
+The last constraint asserts that resources are conserved;
+
+\begin{equation}
+    \sum_{i} \text{GOT}_{i, r} = \sum_{i} \text{GAVE}_{i, r}
+\end{equation}
+
+this can be implemented as;
+
+\begin{minted}{python}
+for resource in resources:
+    inflow = solver.Sum(have_qty_vars[i].get(resource, 0) for i in range(len(intents)))
+    outflow = solver.Sum(want_qty_vars[i].get(resource, 0) for i in range(len(intents)))
+    solver.Add(inflow == outflow)
+\end{minted}
+
+We now must implement the utility function for maximization. This simply subtracts the weighted resources traded away from those received;
+
+\begin{equation}
+    U := \sum_i Wh_i \left(\left(\sum_r V_{i, r} \text{GOT}_{i, r}\right) - \left(\sum_r V_{i, r} \text{GAVE}_{i, r}\right)\right)
+\end{equation}
+
+This can be implemented as;
+
+\begin{minted}{python}
+# Declare objective
+objective = solver.Objective()
+
+for i, intent in enumerate(intents):
+    for r, qty_var in have_qty_vars[i].items():
+        coef = - intent['weight'] * intent['resource_weights'].get(r, 1)
+        objective.SetCoefficient(qty_var, coef)
+
+    for r, qty_var in want_qty_vars[i].items():
+        coef = intent['weight'] * intent['resource_weights'].get(r, 1)
+        objective.SetCoefficient(qty_var, coef)
+
+objective.SetMaximization()
+\end{minted}
+
+Now we can actually solve the system using;
+
+
+\begin{minted}{python}
+status = solver.Solve()
+\end{minted}
+
+The following will print the output in a nice format;
+
+\begin{minted}{python}
+if status == pywraplp.Solver.OPTIMAL:
+    print(f"Objective value = {objective.Value()}")
+    for i, intent in enumerate(intents):
+        if sum(var.solution_value() for var in have_choice_vars[i]) == 1 and \
+             sum(var.solution_value() for var in want_choice_vars[i]) == 1:
+            traded_haves = []
+            traded_wants = []
+            for resource, var in have_qty_vars[i].items():
+                if var.solution_value() > 0:
+                    traded_haves.append(f"{var.solution_value()} {resource}")
+            for resource, var in want_qty_vars[i].items():
+                if var.solution_value() > 0:
+                    traded_wants.append(f"{var.solution_value()} {resource}")
+            print(f"Intent {i + 1} trades {' and '.join(traded_haves)}\
+                    for {' and '.join(traded_wants)}")
+else:
+    print("The problem does not have an optimal solution.")
+\end{minted}
+
+Running that will produce the final solution;
+
+\begin{lstlisting}
+Objective value = 8.700000000000001
+Intent 1 trades 2.0 a and 1.0 b for 1.0 f
+Intent 2 trades 1.0 f for 2.0 a and 1.0 b
+\end{lstlisting}

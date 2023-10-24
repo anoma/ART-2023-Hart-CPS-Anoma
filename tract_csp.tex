@@ -1,0 +1,116 @@
+\section{Tractable CSPs}\label{sec:tractable-csps}
+
+There is a wide swath of research attempting to characterize CSPs that are intrinsically tractable. The goal is to classify all CSPs within a large class. All finite-domain CSPs have been classified, and that's where we will spend most of the attention in this section.
+
+\subsection{Polymorphisms and Tractability}\label{sec:polymorphisms}
+
+In 2017, the full dichotomy theorem for finite-domain CPS was proven in \citep{bulatov2017dichotomy} and \citep{zhuk2020proof}. This section will not try to describe the proof but will describe the basic result. Review section \ref{sec:csp-def} for a description of CSP as relational clones.
+
+Each CSP language has a corresponding algebra of "polymorphisms". A polymorphism of a CSP is a function that preserves all relations. That is, given a relation, $R(X, Y, ..., Z)$, in the CSP, an $n$-ary function, $f$, conserves $R$ if $R(a_1, b_1, ..., c_1) \wedge R(a_2, b_2, ..., c_2) \wedge ... \wedge R(a_n, b_n, ..., c_n)$ implies $R(f(a_1, a_2, ..., a_n), f(b_1, b_2, ..., b_n), ..., f(c_1, c_2, ..., c_n))$. If $f$ satisfies the analog of this for all relations within the CSP, it’s a polymorphism.
+
+\begin{remark}
+This has a connection to programming language theory through Reynold’s theory of relational parametricity. There, polymorphism (in the programming sense), is defined through a function preserving all relations. This is the same concept, but in a higher-order, infinite domain, while we’re dealing with a first-order, finite domain. At first-order, the only parametrically polymorphic functions are the projection functions (including identity as a special case). As such, projections are always polymorphisms for any CSP. Additionally, with some thought, we can conclude that, if $f$ and $g$ preserve a relation, then so does their composition. Beyond this, we don’t think anyone’s studied this connection with any seriousness.
+\end{remark}
+
+This gets us an algebra of functions that includes all the projection functions and is closed under composition. This is called a "functional clone".
+
+\begin{remark}
+Incidentally, functional clones are usually just called "clones", and such function algebras are the domain of clone theory (see, e.g., \citep{lau2006function}). Relational clones don't seem widely studied.
+\end{remark}
+
+Modern approaches to CSP tractability focus on the structure of this polymorphism algebra. The low-resolution version of the dichotomy theorem states that
+\begin{quote}
+    Any finite-domain CSP is either NP-complete or all queries are P-time solvable
+\end{quote}
+
+A higher-resolution version of this theorem would state
+
+\begin{quote}
+    Any finite-domain CSP whose polymorphism algebra is essentially a clone of projections (in other words, whose polymorphism algebra is trivial) is NP-complete, otherwise, all queries are P-time solvable.    
+\end{quote}
+
+\begin{remark}
+Note that I’m hiding some technical details by using the word "essentially"; something can be "essentially just a bunch of projections" without literally being that. A polymorphism is "essentially a projection" if all height-1 identities (i.e. equations with exactly one occurrence of the function on each side) are also satisfied by projections.
+\end{remark}
+
+This has some significant consequences in that it shows there are no finite-domain CSPs that are between P and NP-hard; there are no quasi-polynomial time CSPs, etc. Also, tractability can be framed by studying the algebra of polymorphisms. All previous dichotomy results in the literature, e.g. those presented in \citep{grohe2006structure}, are special cases of this.
+
+For a survey of the general approach, see \citep{brady2022notes} and \citep{barto2017polymorphisms}. These, unfortunately, do not go into the proof of the dichotomy theorem. The most cogent presentation is \citep{barto2021minimal}. The original proofs used different, hard-to-grok methods; the goal of that paper is to unify them under a single framework.
+
+\subsection{Example: 2-SAT}\label{sec:2-sat-example}
+
+I will give an example of a powerful polymorphism within 2-SAT, and explain how it relates to efficient problem solving.
+
+We will start by identifying a non-trivial polymorphism. The smallest, non-trivial polymorphism is the following function;
+
+\begin{equation}
+    f(x, y, z) := (x \wedge y) \vee (x \wedge z) \vee (y \wedge z)
+\end{equation}
+
+This function will return true so long as at least two of its inputs are true, and false otherwise. This is often called the "majority function".
+
+The three relations in 2-SAT are
+
+\begin{equation}
+    R_1(x, y) := x \vee y
+\end{equation}
+\begin{equation}
+    R_2(x, y) := \neg x \vee y
+\end{equation}
+\begin{equation}
+    R_3(x, y) := \neg x \vee \neg y
+\end{equation}
+
+That $f$ is a polymorphism boils down to three observations.
+
+\begin{itemize}
+    \item[1] The polymorphism property of $R_1$ merely states that, if we know three disjunctions are true, then either at least two of the left disjuncts must be true or at least two of the right disjuncts must be true.
+    \item[2] The polymorphism property of $R_2$ merely states that, if we know three implications are true, then if at least two of the antecedents are true then at least two of the consequents must also be true.
+    \item[3] The polymorphism property of $R_3$ merely states that, if we know three disjunctions between negated literals are true, then either at most one of the left disjuncts can be true or at most one of the right disjuncts can be true.
+\end{itemize}
+
+All of these can be concluded intuitively with some thought, and so we may conclude that $f$ is a polymorphism for 2-SAT.
+
+The polymorphism doesn't automatically tell us how to derive a solution; rather, it verifies that certain methods will always work by restricting the possible structure of the CSP. In the case of majority functions, if such a polymorphism exists, this guarantees that a greedy search on values (i.e. assigning arbitrary values to variables, and simply ensuring no future contradictions) will end efficiently so long as the width of the instance graph is small enough. Further, the existence of a majority polymorphism also guarantees that any instance graph can be transformed into another instance graph with the required treewidth, with the same solutions in polynomial time \citep{feder1998computational}.
+
+% \subsection{Example: Systems of Linear Equations}\label{sec:lineq-example}
+
+% If we restrict ourselves to booleans, we may define linear equations over this domain by the relation;
+
+% \begin{equation}
+%     R_1(x, y, z) := x \cplus y = z
+% \end{equation}
+
+% where $\cplus$ represents the exclusive or function. This domain, like all linear equation domains, can be solved efficiently using, for example, Gaussian elimination. However, searching through the polymorphisms may give insight into what other methods might work.
+
+% This sole relation has a non-trivial unary polymorphism in the form of the constant function returning $0$. When a constant polymorphism exists, this indicates we can always set all variables to this constant to get a trivial satisfying assignment. If we want a harder problem, we need to add, at least, the further unary relation;
+
+% \begin{equation}
+%     R_2(x) := x = 1
+% \end{equation}
+
+% The simplest non-trivial polymorphism is now;
+
+% \begin{equation}
+%     x \cplus y \cplus z
+% \end{equation}
+
+% This function will return true so long as either exactly one or all of its variables are true.
+
+% This polymorphism has some important properties, most notably it's 
+
+\subsection{Tractability for CSP Variants}\label{sec:beyond csps}
+
+There have been many directions of work trying to apply the so-called "Algebraic Approach" to CSPs to other domains.
+
+The most active is promise CSPs. Most polymorphism techniques have not been so successful in this domain. Many definitions that universal algebra relies on do not make sense here. See \citep{krokhin2022invitation}.
+
+Quantified CSPs have had much more success in adopting this method. There was a trichotomy conjecture asserting that all finite domain QCSP problems are either PSpace-hard, NP-hard, or P-time tractable, but this has since been disproven. See \citep{zhuk2022qcsp}. Full classification of QCSPs is still an open problem. Some large classes are classified, see for example \citep{zhuk2021complexity} and \citep{borner2009complexity}.
+
+There is also some work on infinite domain CSPs. This is a bit vague, so additional restrictions are added. Common ones are being numerical domain relations, being omega-categorical, or being equipped with an oligomorphic permutation group. See \citep{bodirsky2012complexity}.
+
+Another relevant area is parameterized complexity of CSPs. This seems understudied, but the idea is to loosen the notion of polymorphism to that of a partial polymorphism that preserves some but not all relations of the CSP. The details of this can allow one to classify queries by difficulty, allowing a worst-case untractable CSP to have a large collection of tractable queries. See \citep{couceiro2019fine}.
+
+Robust satisfiability is an attempt to characterize problems where, if a problem has an almost satisfying assignment, then such an assignment can always be found. Note that this doesn’t necessarily cover MaxCSP in its entirety; a MaxCSP problem could still be tractable in practice even if it isn’t robustly satisfiable. This would mean that some instances are easily approximable, but, in general, we couldn’t do better than guessing. This doesn’t mean that we can’t efficiently maximize satisfied clauses either on average or efficiently with respect to some parameter other than problem size. The most important paper is \citep{barto2016robustly}. This proves that any bounded width CSP is robustly satisfiable. Bounded width, in this case, means that the CSP cannot encode linear equations over abelian groups. Further, any efficiently robustly satisfiable CSP must have bounded width. This means that being of bounded width is the only condition that must be met to efficiently and robustly maximize assignments, and one cannot do better.
+
+
