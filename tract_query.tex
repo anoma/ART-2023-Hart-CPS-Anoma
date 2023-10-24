@@ -60,13 +60,13 @@ We can simply go in this order, making a choice of color, only needing to ensure
 % Root node
 \node {${\color{blue}\CIRCLE}$}
 % First level
-  child {node {${\color{green}\CIRCLE}$}
+  child {node {${\color{darkgreen}\CIRCLE}$}
     % Second level
     child {node {${\color{blue}\CIRCLE}$}}
     child {node {${\color{blue}\CIRCLE}$}}
   }
   % First level
-  child {node {${\color{green}\CIRCLE}$}
+  child {node {${\color{darkgreen}\CIRCLE}$}
     % Second level
     child {node {${\color{blue}\CIRCLE}$}}
   };
@@ -82,17 +82,17 @@ Of course, this doesn't generalize to more complex CSPs. Often, an initial choic
   level 2/.style={sibling distance=1.5cm}]
 
 % Root node
-\node {$\{{\color{blue}\CIRCLE} {\color{green}\CIRCLE} {\color{red}\CIRCLE}\}$}
+\node {$\{{\color{blue}\CIRCLE} {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE}\}$}
 % First level
-  child {node {$\{{\color{green}\CIRCLE}\}$}
+  child {node {$\{{\color{darkgreen}\CIRCLE}\}$}
     % Second level
     child {node {$\{{\color{blue}\CIRCLE} {\color{red}\CIRCLE}\}$}}
-    child {node {$\{{\color{blue}\CIRCLE} {\color{green}\CIRCLE} {\color{red}\CIRCLE}\}$}}
+    child {node {$\{{\color{blue}\CIRCLE} {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE}\}$}}
   }
   % First level
-  child {node {$\{{\color{blue}\CIRCLE} {\color{green}\CIRCLE}\}$}
+  child {node {$\{{\color{blue}\CIRCLE} {\color{darkgreen}\CIRCLE}\}$}
     % Second level
-    child {node {$\{{\color{green}\CIRCLE}\}$}}
+    child {node {$\{{\color{darkgreen}\CIRCLE}\}$}}
   };
 
 \end{tikzpicture}
@@ -111,15 +111,15 @@ We start with F which must be green, so E cannot contain green. E would then be 
 % Root node
 \node {$\{{\color{red}\CIRCLE}\}$}
 % First level
-  child {node {$\{{\color{green}\CIRCLE}\}$}
+  child {node {$\{{\color{darkgreen}\CIRCLE}\}$}
     % Second level
     child {node {$\{{\color{blue}\CIRCLE} {\color{red}\CIRCLE}\}$}}
-    child {node {$\{{\color{blue}\CIRCLE} {\color{green}\CIRCLE} {\color{red}\CIRCLE}\}$}}
+    child {node {$\{{\color{blue}\CIRCLE} {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE}\}$}}
   }
   % First level
   child {node {$\{{\color{blue}\CIRCLE}\}$}
     % Second level
-    child {node {$\{{\color{green}\CIRCLE}\}$}}
+    child {node {$\{{\color{darkgreen}\CIRCLE}\}$}}
   };
 
 \end{tikzpicture}
@@ -135,7 +135,7 @@ And applying the forward sweep, we'd have the following three-coloring.
 % Root node
 \node {${\color{red}\CIRCLE}$}
 % First level
-  child {node {${\color{green}\CIRCLE}$}
+  child {node {${\color{darkgreen}\CIRCLE}$}
     % Second level
     child {node {${\color{blue}\CIRCLE}$}}
     child {node {${\color{blue}\CIRCLE}$}}
@@ -143,7 +143,7 @@ And applying the forward sweep, we'd have the following three-coloring.
   % First level
   child {node {${\color{blue}\CIRCLE}$}
     % Second level
-    child {node {${\color{green}\CIRCLE}$}}
+    child {node {${\color{darkgreen}\CIRCLE}$}}
   };
 
 \end{tikzpicture}
@@ -199,12 +199,12 @@ Now, we'll use these clusters to define three new variables; $x_{124} = (x_1, x_
 
 \begin{equation}
     ColorPerms =
-    \{{\color{blue}\CIRCLE} {\color{green}\CIRCLE} {\color{red}\CIRCLE}, 
-    {\color{green}\CIRCLE} {\color{blue}\CIRCLE} {\color{red}\CIRCLE},
-    {\color{red}\CIRCLE} {\color{green}\CIRCLE} {\color{blue}\CIRCLE},
-    {\color{blue}\CIRCLE} {\color{red}\CIRCLE} {\color{green}\CIRCLE}, 
-    {\color{red}\CIRCLE} {\color{blue}\CIRCLE} {\color{green}\CIRCLE},
-    {\color{green}\CIRCLE} {\color{red}\CIRCLE} {\color{blue}\CIRCLE}
+    \{{\color{blue}\CIRCLE} {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE}, 
+    {\color{darkgreen}\CIRCLE} {\color{blue}\CIRCLE} {\color{red}\CIRCLE},
+    {\color{red}\CIRCLE} {\color{darkgreen}\CIRCLE} {\color{blue}\CIRCLE},
+    {\color{blue}\CIRCLE} {\color{red}\CIRCLE} {\color{darkgreen}\CIRCLE}, 
+    {\color{red}\CIRCLE} {\color{blue}\CIRCLE} {\color{darkgreen}\CIRCLE},
+    {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE} {\color{blue}\CIRCLE}
     \}
 \end{equation}
 
@@ -227,26 +227,26 @@ Using these, we can reformulate our CSP into
 This is clearly tree-like. In fact, it doesn't even branch; it's a line. As such, we can now solve it efficiently. Applying the forward pass from the previous section, we can start by assigning;
 
 \begin{equation}
-    x_{124} = {\color{blue}\CIRCLE} {\color{green}\CIRCLE} {\color{red}\CIRCLE}
+    x_{124} = {\color{blue}\CIRCLE} {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE}
 \end{equation}
 
 We can then use $E^{23}_{12}$ to see that the remaining options for $x_{245}$ are
 
 \begin{equation}
-    \{{\color{green}\CIRCLE} {\color{red}\CIRCLE} {\color{blue}\CIRCLE}
+    \{{\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE} {\color{blue}\CIRCLE}
     \}
 \end{equation}
 
 forcing a single option. Using this along with $E^{13}_{13}$ we can restrict $x_{235}$ to the same set. This means we have;
 
 \begin{equation}
-    x_{124} = (x_1, x_2, x_4) = {\color{blue}\CIRCLE} {\color{green}\CIRCLE} {\color{red}\CIRCLE}
+    x_{124} = (x_1, x_2, x_4) = {\color{blue}\CIRCLE} {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE}
 \end{equation}
 \begin{equation}
-    x_{245} = (x_2, x_4, x_5) = {\color{green}\CIRCLE} {\color{red}\CIRCLE} {\color{blue}\CIRCLE}
+    x_{245} = (x_2, x_4, x_5) = {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE} {\color{blue}\CIRCLE}
 \end{equation}
 \begin{equation}
-    x_{235} = (x_2, x_3, x_5) = {\color{green}\CIRCLE} {\color{red}\CIRCLE} {\color{blue}\CIRCLE}
+    x_{235} = (x_2, x_3, x_5) = {\color{darkgreen}\CIRCLE} {\color{red}\CIRCLE} {\color{blue}\CIRCLE}
 \end{equation}
 
 We can then use this solution to fill in the graph colors, obtaining;
@@ -254,7 +254,7 @@ We can then use this solution to fill in the graph colors, obtaining;
 \begin{center}
 \begin{tikzpicture}
   \node (A) at (0,0) {${\color{blue}\CIRCLE}$};
-  \node (B) at (2,0) {${\color{green}\CIRCLE}$};
+  \node (B) at (2,0) {${\color{darkgreen}\CIRCLE}$};
   \node (C) at (4,0) {${\color{red}\CIRCLE}$};
   \node (D) at (1,-2) {${\color{red}\CIRCLE}$};
   \node (E) at (3,-2) {${\color{blue}\CIRCLE}$};
