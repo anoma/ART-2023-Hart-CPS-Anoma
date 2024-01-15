@@ -95,15 +95,15 @@ Diophantine Equations are an interesting example of a CSP with, in some sense, m
     x^3 + y^3 = z^3
 \end{equation}
 
-By Matii︠a︡sevich's theorem, we know that Diophantine Equations are Turing complete. This means that all computable relations are expressible as some system of Diophantine Equations. For example, despite exponentiation between two variables not being a polynomial, such a relation is definable as a system of polynomials, though the construction is quite involved \citep{matii︠a︡sevich1993hilbert}. This expressiveness implies that solving Diophantine Equations, in general, is as hard as solving the hardest possible problem, since that problem can be expressed as a system of Diophantine Equations.
+By Matiyasevich's theorem, we know that Diophantine Equations are Turing complete. This means that all computable relations are expressible as some system of Diophantine Equations. For example, despite exponentiation between two variables not being a polynomial, such a relation is definable as a system of polynomials, though the construction is quite involved \citep{matiyasevich1993hilbert}. This expressiveness implies that solving Diophantine Equations, in general, is as hard as solving the hardest possible problem, since that problem can be expressed as a system of Diophantine Equations.
 
 \begin{remark}\label{remark:natural-mat}
-Matii︠a︡sevich's theorem was actually proven over the domain of natural numbers, that is the non-negative integers, including 0. The version over the integers is a simple corollary since an integer, $n$, can be restricted to be a natural number using the expression $\exists i_1, i_2, i_3, i_4. n = i_1^2 + i_2^2 + i_3^2 + i_4^2$, by Lagrange's four-square theorem. Such expressions can be added to any system of polynomials over the naturals to create a system over the integers defining the same relation.
+Matiyasevich's theorem was actually proven over the domain of natural numbers, that is the non-negative integers, including 0. The version over the integers is a simple corollary since an integer, $n$, can be restricted to be a natural number using the expression $\exists i_1, i_2, i_3, i_4. n = i_1^2 + i_2^2 + i_3^2 + i_4^2$, by Lagrange's four-square theorem. Such expressions can be added to any system of polynomials over the naturals to create a system over the integers defining the same relation.
 \end{remark}
 
 Diophantine Equations are an example of an infinite-domain CSP. They are also an example where instances are generally undecidable. That is, one cannot, in general, even know if a solution exists, even with infinite effort. They are, however, semi-decidable. That is, we can define an algorithm that will find a solution if one exists but may run forever if a solution does not exist. This can be done by counting through tuples of assignments (using some pairing function to define a canonical ordering \citep{rosenberg2003efficient}), and evaluating the system of polynomials at each assignment. This will always tell you if the assignment is satisfying in finite time, meaning that, if a solution exists, it will eventually be found by this procedure.
 
-See \citep{matii︠a︡sevich1993hilbert} for reference.
+See \citep{matiyasevich1993hilbert} for reference.
 
 \subsection{Example: Three Coloring}\label{sec:three-coloring}
 
