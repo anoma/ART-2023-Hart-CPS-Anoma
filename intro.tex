@@ -4,25 +4,25 @@ Constraint Satisfaction Problems (CSPs) represent a versatile and powerful area 
 
 \subsection{What CSPs Are}\label{sec:csp-def}
 
-A CSP (Constraint Satisfaction Problem) is fundamentally built out of a set of generating relations, over a domain $d$. A CSP starts with a finite set of "atomic relations", each with a fixed arity. A relation of arity $n$ can be defined as any set of $n$-tuples of elements of $d$. These atomic relations serve as the building blocks for defining more complex relations within the CSP. Such construction is achieved through "relational composition", a process involving both conjunction and existential quantification over shared variables. For instance, given relations $R_1(x,y)$ and $R_2(y,z)$, a new relation can be defined as
+A CSP is fundamentally built out of a set of generating relations over a domain $d$. A CSP starts with a finite set of \say{atomic relations}, each with a fixed arity. A relation of arity $n$ can be defined as any set of $n$-tuples of elements of $d$. These atomic relations serve as the building blocks for defining more complex relations within the CSP. Such construction is achieved through \say{relational composition}, a process involving conjunction and existential quantification over shared variables. For instance, given relations $R_1(x,y)$ and $R_2(y,z)$, a new relation can be defined as
 
 \begin{equation}\label{equation:relation-composition-example}
-R_3(x,z) := \exists y. R_1(x,y) \wedge R_2(y,z)
+R_3(x,z) := \exists y. R_1(x,y) \wedge R_2(y,z).
 \end{equation}
 
-It should be noted that we allow variables to be freely deleted, duplicated, and equated as part of relational definitions. An algebra of relations closed under relational composition is called a "relational clone". A familiar example is linear programming, where atomic relations like $x+y\leq z$ and $x=y$ can be composed to form more intricate linear systems. In that example, the variable domain might be the set of rationals.
+It should be noted that we allow variables to be freely deleted, duplicated, and equated as part of relational definitions. An algebra of relations closed under relational composition is called a \say{relational clone}. A familiar example is linear programming, where atomic relations like $x+y\leq z$ and $x=y$ can be composed to form more intricate linear systems. In that example, the variable domain might be the set of rationals.
 
-Given a CSP, an instance of this CSP consists of
+Given a CSP, an instance of this CSP consists of the following:
 
 \begin{itemize}
-  \item $X$: a finite set of variable symbols
-  \item $C$: a finite set of constraints (called "clauses") consisting of expressions of the form $R(x_1,x_2,...,x_n)$, where $R$ is an $n$-ary, atomic relation from our CSP, and $x_i \in X$, for all $i$
+  \item $X$: a finite set of variable symbols.
+  \item $C$: a finite set of constraints (called "clauses") consisting of expressions of the form $R(x_1,x_2,...,x_n)$, where $R$ is an $n$-ary, atomic relation from our CSP, and $x_i \in X$, for all $i$.
 \end{itemize}
 
-An assignment of an instance consists of a map from $X$ into $d$, and the truth value (or valuation) of an instance relative to an assignment is the evaluation of the conjunction of all constraints with respect to the assignments. If an assignment produces a true valuation, then the instance is said to be "satisfiable", and the assignment is called a "satisfying assignment" for that instance. One may interpret the satisfiability of CSP instances as the 0-ary relations definable within the CSP.
+An assignment of an instance consists of a map from $X$ into $d$, and the truth value (or valuation) of an instance relative to an assignment is the evaluation of the conjunction of all constraints with respect to the assignments. If an assignment produces a true valuation, then, the instance is said to be "satisfiable", and the assignment is called a "satisfying assignment" for that instance. One may interpret the satisfiability of CSP instances as the 0-ary relations definable within the CSP.
 
 \begin{remark}\label{remark:instance-terminology}
-Not all authors make a clear distinction between CSPs and their instances. Some will refer to CSP instances as just "CSPs". Research on CSP complexity is consistent on making this distinction, while research on distributed CSPs is not. We've decided to be clear, as confusion may arise if a distinction is not made. One does not need a fixed set of variables to define the CSPs describing linear programming or boolean satisfiability, for example, while one does need a fixed set of variables to define their instances.
+Not all authors make a clear distinction between CSPs and their instances. Some will refer to CSP instances as just "CSPs". Research on CSP complexity is consistent in making this distinction, while research on distributed CSPs is not. We've decided to be clear, as confusion may arise if a distinction is not made. One does not need a fixed set of variables to define the CSPs describing linear programming or boolean satisfiability, for example, while one does need a fixed set of variables to define their instances.
 \end{remark}
 
 \begin{remark}\label{remark:relational-database-terminology}
@@ -37,19 +37,19 @@ By far the most well-studied CSPs are from the domain of boolean satisfiability.
     (x_1 \lor \neg x_2) \land (\neg x_1 \lor x_3) \land (x_2 \lor \neg x_3) \land (\neg x_1 \lor \neg x_2)
 \end{equation}
 
-We can note that this instance has three variables, $x_1$, $x_2$, and $x_3$. 2-SAT is a tractable CSP, meaning that we can always efficiently calculate if a solution exists, and what it is if it does. 
+We can note that this instance has three variables, $x_1$, $x_2$, and $x_3$. 2-SAT is a tractable CSP, meaning we can always efficiently calculate if a solution exists and what it is if it does. 
 
 \begin{remark}
-    When we describe something as "efficient" to solve, we always mean that is can be solved in polynomial time.
+    When we describe something as "efficient" to solve, we always mean that it can be solved in polynomial time.
 \end{remark}
 
-The standard reasoning method for 2-SAT is called binary resolution, and states that;
+The standard reasoning method for 2-SAT is called binary resolution and states that;
 
 \begin{equation}\label{equation:binary-resolution}
-\frac{C_1 \lor p \quad C_2 \lor \neg p}{C_1 \lor C_2}
+\frac{C_1 \lor p \quad C_2 \lor \neg p}{C_1 \lor C_2}.
 \end{equation}
 
-this allows us to derive new clauses from the old ones by connecting them with shared variables of opposite polarity. We can, in particular, apply it to the clauses $x_1 \lor \neg x_2$ and $\neg x_1 \lor \neg x_2$, allowing us to derive $\neg x_2 \lor \neg x_2 = \neg x_2$. This tells us that $x_2$ must be $0$. Substituting this into our original problem and simplifying leads to
+This allows us to derive new clauses from the old ones by connecting them with shared variables of opposite polarity. We can, in particular, apply it to the clauses $x_1 \lor \neg x_2$ and $\neg x_1 \lor \neg x_2$, allowing us to derive $\neg x_2 \lor \neg x_2 = \neg x_2$. This tells us that $x_2$ must be $0$. Substituting this into our original problem and simplifying leads to
 
 \begin{equation}\label{equation:two-sat-example-pt2}
 (\neg x_1 \lor x_3) \land \neg x_3
@@ -65,9 +65,9 @@ By doing this, we end up with
 
 forcing $x_1$ to be $0$. Ultimately, we conclude that this problem has a satisfying instance, that being the map $\langle x_1 \rightarrow 0; x_2 \rightarrow 0; x_3 \rightarrow 0\rangle$.
 
-While it's convenient to work with 2-SAT, it isn't very expressive. Most boolean SAT solving is done using at least 3-SAT. This version of the problem has the relations, $x \vee y \vee z$, $\neg x \vee y \vee z$, $\neg x \vee \neg y \vee z$, and $\neg x \vee \neg y \vee \neg z$.
+While it's convenient to work with 2-SAT, it is not very expressive. Most boolean SAT solving is done using at least 3-SAT. This version of the problem has the relations, $x \vee y \vee z$, $\neg x \vee y \vee z$, $\neg x \vee \neg y \vee z$, and $\neg x \vee \neg y \vee \neg z$.
 
-Solvers often don't enforce a specific argument number. If we need to express a clause in 3-SAT that has more than three clauses, we can split it up by introducing dummy variables. For example,
+Solvers often do not enforce a specific argument number. If we need to express a clause in 3-SAT that has more than three clauses, we can split it up by introducing dummy variables. For example,
 
 \begin{equation}\label{equation:three-sat-split-pt1}
 \neg x_1 \vee \neg x_2 \vee \neg x_3 \vee x_4 \vee x_5
@@ -208,9 +208,9 @@ A CSP instance will also become a graph. In that case, $V = X$, the set of varia
     E = \{ (x, y)\ |\ R(x, y)\ \text{is a clause of the instance} \}
 \end{equation}
 
-At this point, we'd like you to consider what a homomorphism from the instance graph to the model graph would represent. It would assign every variable an element of the domain such that each clause is mapped to an edge validating the relationship between domain values. A homomorphism is the same thing as a satisfying assignment, and we may understand the goal of a CSP as finding a homomorphism to its model graph.
+We would like you to consider what a homomorphism from the instance graph to the model graph would represent. It would assign every variable an element of the domain such that each clause is mapped to an edge validating the relationship between domain values. A homomorphism is the same thing as a satisfying assignment, and we may understand the goal of a CSP as finding a homomorphism to its model graph.
 
-To give a simple example, consider the three coloring case, that matches our setup. In that case, the relation is symmetric, so we can draw the model and instance graphs as undirected; though that won't be possible in general. The model graph would be;
+To give a simple example, consider the three coloring case, that matches our setup. In that case, the relation is symmetric, so we can draw the model and instance graphs as undirected; though that will not be possible in general. The model graph would be;
 
 \begin{center}
 \begin{tikzpicture}
@@ -225,7 +225,7 @@ To give a simple example, consider the three coloring case, that matches our set
 \end{center}
 
 
-and the instance graph is literally just the problem graph with no modification. As we can see, the CSP problem can be formulated in a completely non-syntactic manner; without variables or clauses and such. It is a purely graph-theoretic problem, though it's not always helpful to think of it as such. Graph coloring, because it's already about graphs, is quite naturally expressed in these terms. Since the CSP and the model graph are the same, we can identify each graph with a CSP over a single binary relation. In particular, the complete graph of size k corresponds to the model graph for k-coloring.
+and the instance graph is literally just the problem graph with no modification. As we can see, the CSP problem can be formulated in a completely non-syntactic manner; without variables or clauses and such. It is a purely graph-theoretic problem, though it is not always helpful to think of it as such. Graph coloring, because it's already about graphs, is quite naturally expressed in these terms. Since the CSP and the model graph are the same, we can identify each graph with a CSP over a single binary relation. In particular, the complete graph of size k corresponds to the model graph for k-coloring.
 
 To generalize to binary CSPs with multiple relations, we must switch to an edge-colored graph. 
 
