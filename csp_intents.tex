@@ -95,12 +95,12 @@ Everything else can stay the same, but we are now enforcing exclusivity. We can 
 
 With a clear idea to formalize, we can create an actual intent optimizer using an off-the-shelf solver. For this demo, we will use the SCIP solver through the Google OR Tools library within Python. We may begin by importing the library and declaring our solver;
 
-\begin{minted}{python}
+\begin{betterpython}
 from ortools.linear_solver import pywraplp
 
 # Create the solver
 solver = pywraplp.Solver.CreateSolver('SCIP')
-\end{minted}
+\end{betterpython}
 
 The notion of intent we will formalize will be a combination of the two notions described in section \ref{sec:ilp-intents}. Each partial transaction will have an exclusive set of proposed haves and wants. Each of those will have a collection of resources that can be traded.
 
@@ -115,7 +115,7 @@ We can start by defining a data formalization. Each intent will consist of a par
 
 We can use this as a guide to implement example partial transactions. We will use the following in this demo;
 
-\begin{minted}{python}
+\begin{betterpython}
 # Define available resources
 resources = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
 
@@ -136,7 +136,7 @@ intents = [
      'r_weights': { 'a': 0.7, 'b': 0.2, 'c': 0.9, 'd': 0.9, 'e': 0.85, 'f': 1.0}
     },
 ]
-\end{minted}
+\end{betterpython}
 
 We can further declare the variables used to actually formalize the constraint problem. We will have the following;
 
@@ -149,7 +149,7 @@ We can further declare the variables used to actually formalize the constraint p
 
 These can be implemented by declaring each list of variables, along with their domains, like so;
 
-\begin{minted}{python}
+\begin{betterpython}
 have_choice_vars = []
 want_choice_vars = []
 have_qty_vars = []
@@ -174,7 +174,7 @@ for i, intent in enumerate(intents):
     want_qty = {r: solver.IntVar(0, qty, f"want_qty_{i}_{r}")\
                 for option in intent['want'] for r, qty in option.items()}
     want_qty_vars.append(want_qty)
-\end{minted}
+\end{betterpython}
 
 We may then declare the constraints which guarantee that only one option is chosen and that a want option is chosen if and only if a have option is chosen.
 
@@ -192,7 +192,7 @@ We may then declare the constraints which guarantee that only one option is chos
 
 This can be implemented as
 
-\begin{minted}{python}
+\begin{betterpython}
 # Declare constraints
 # For each intent, we'll ensure that at most one "have" and one "want"
 # boolean can be true, and they must coincide.
@@ -200,7 +200,7 @@ for i in range(len(intents)):
     solver.Add(solver.Sum(have_choice_vars[i]) <= 1)
     solver.Add(solver.Sum(want_choice_vars[i]) <= 1)
     solver.Add(solver.Sum(have_choice_vars[i]) == solver.Sum(want_choice_vars[i]))
-\end{minted}
+\end{betterpython}
 
 Next, we must ensure the traded quantities are appropriate. The quantities given away must max out at the quantity stated within the have option chosen;
 
@@ -216,7 +216,7 @@ and the quantities got have to be exactly those specified by the chosen want opt
 
 We can implement these constraints as;
 
-\begin{minted}{python}
+\begin{betterpython}
 # Link "have" and "want" quantities to their choice variables
 for i, intent in enumerate(intents):
     for j, have_option in enumerate(intent['have']):
@@ -230,15 +230,15 @@ for i, intent in enumerate(intents):
             solver.Add(want_qty_vars[i][r] ==\
                 sum(option.get(r, 0) * want_choice_vars[i][j] 
                     for j, option in enumerate(intent['want'])))
-\end{minted}
+\end{betterpython}
 
 where \verb|resources_set| is a function that calculates the set of resources within an intent;
 
 
-\begin{minted}{python}
+\begin{betterpython}
 def resources_set(intent, key):
     return list(set(resource for option in intent[key] for resource in option.keys()))
-\end{minted}
+\end{betterpython}
 
 The last constraint asserts that resources are conserved;
 
@@ -248,12 +248,12 @@ The last constraint asserts that resources are conserved;
 
 this can be implemented as;
 
-\begin{minted}{python}
+\begin{betterpython}
 for resource in resources:
     inflow = solver.Sum(have_qty_vars[i].get(resource, 0) for i in range(len(intents)))
     outflow = solver.Sum(want_qty_vars[i].get(resource, 0) for i in range(len(intents)))
     solver.Add(inflow == outflow)
-\end{minted}
+\end{betterpython}
 
 We now must implement the utility function for maximization. This simply subtracts the weighted resources traded away from those received;
 
@@ -263,7 +263,7 @@ We now must implement the utility function for maximization. This simply subtrac
 
 This can be implemented as;
 
-\begin{minted}{python}
+\begin{betterpython}
 # Declare objective
 objective = solver.Objective()
 
@@ -277,18 +277,18 @@ for i, intent in enumerate(intents):
         objective.SetCoefficient(qty_var, coef)
 
 objective.SetMaximization()
-\end{minted}
+\end{betterpython}
 
 Now we can actually solve the system using;
 
 
-\begin{minted}{python}
+\begin{betterpython}
 status = solver.Solve()
-\end{minted}
+\end{betterpython}
 
 The following will print the output in a nice format;
 
-\begin{minted}{python}
+\begin{betterpython}
 if status == pywraplp.Solver.OPTIMAL:
     print(f"Objective value = {objective.Value()}")
     for i, intent in enumerate(intents):
@@ -306,7 +306,7 @@ if status == pywraplp.Solver.OPTIMAL:
                     for {' and '.join(traded_wants)}")
 else:
     print("The problem does not have an optimal solution.")
-\end{minted}
+\end{betterpython}
 
 Running that will produce the final solution;
 
