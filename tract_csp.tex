@@ -1,6 +1,6 @@
 \section{Tractable CSPs}\label{sec:tractable-csps}
 
-There is a wide swath of research attempting to characterize CSPs that are intrinsically tractable. The goal is to classify all CSPs within a large class. All finite-domain CSPs have been classified, and that's where we will spend most of the attention in this section.
+There is a wide swath of research attempting to characterize CSPs that are intrinsically tractable. The goal is to classify all CSPs within a large class. All finite-domain CSPs have been classified, and that is where we will spend most of the attention in this section.
 
 \subsection{Polymorphisms and Tractability}\label{sec:polymorphisms}
 
@@ -15,7 +15,7 @@ This has a connection to programming language theory through Reynold’s theory 
 This gets us an algebra of functions that includes all the projection functions and is closed under composition. This is called a "functional clone".
 
 \begin{remark}
-Incidentally, functional clones are usually just called "clones", and such function algebras are the domain of clone theory (see, e.g., \citep{lau2006function}). Relational clones don't seem widely studied.
+Incidentally, functional clones are usually just called "clones", and such function algebras are the domain of clone theory (see, e.g., \citep{lau2006function}). Relational clones do not seem widely studied.
 \end{remark}
 
 Modern approaches to CSP tractability focus on the structure of this polymorphism algebra. The low-resolution version of the dichotomy theorem states that
@@ -71,7 +71,7 @@ That $f$ is a polymorphism boils down to three observations.
 
 All of these can be concluded intuitively with some thought, and so we may conclude that $f$ is a polymorphism for 2-SAT.
 
-The polymorphism doesn't automatically tell us how to derive a solution; rather, it verifies that certain methods will always work by restricting the possible structure of the CSP. In the case of majority functions, if such a polymorphism exists, this guarantees that a greedy search on values (i.e. assigning arbitrary values to variables, and simply ensuring no future contradictions) will end efficiently so long as the width of the instance graph is small enough. Further, the existence of a majority polymorphism also guarantees that any instance graph can be transformed into another instance graph with the required treewidth, with the same solutions in polynomial time \citep{feder1998computational}.
+The polymorphism does not automatically tell us how to derive a solution; rather, it verifies that certain methods will always work by restricting the possible structure of the CSP. In the case of majority functions, if such a polymorphism exists, this guarantees that a greedy search on values (i.e. assigning arbitrary values to variables, and simply ensuring no future contradictions) will end efficiently so long as the width of the instance graph is small enough. Further, the existence of a majority polymorphism also guarantees that any instance graph can be transformed into another instance graph with the required treewidth, with the same solutions in polynomial time \citep{feder1998computational}.
 
 % \subsection{Example: Systems of Linear Equations}\label{sec:lineq-example}
 
@@ -97,7 +97,7 @@ The polymorphism doesn't automatically tell us how to derive a solution; rather,
 
 % This function will return true so long as either exactly one or all of its variables are true.
 
-% This polymorphism has some important properties, most notably it's 
+% This polymorphism has some important properties, most notably it is 
 
 \subsection{Tractability for CSP Variants}\label{sec:beyond csps}
 

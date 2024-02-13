@@ -1,5 +1,5 @@
 \section{Preprocessing Techniques}\label{sec:preprocessing}
-Understanding how to manipulate CSPs is necessary to gain an intuition for the limits of solving. There isn't a universal theory for such things, but broad categories of techniques are useful to know about. This section will go through some of the most significant.
+Understanding how to manipulate CSPs is necessary to gain an intuition for the limits of solving. There is not a universal theory for such things, but broad categories of techniques are useful to know about. This section will go through some of the most significant.
 
 \subsection{Simplification}\label{sec:simplification}
 Simplification is, intuitively, the first thing someone might want to do. Simplification will transform a CSP instance into another, smaller instance with the "same" solution.
@@ -28,9 +28,9 @@ The factoring property would transform this into
     n = -1 \wedge s = x \times x \wedge m = s + n
 \end{equation}
 
-This isn't a simplification according to a naive interpretation of the "same solution". Notice that the variables are different, meaning a solution to this new problem would not actually be a solution to the old problem.
+This is not a simplification according to a naive interpretation of the \say{same solution}. Notice that the variables are different, meaning a solution to this new problem would not actually be a solution to the old problem.
 
-There is a certain sense that this problem is equivalent to the old one. The new problem is satisfiable if and only if the old one is. Further, the values of unshared variables can be uniquely determined by variables that are shared. As such, there is a 1-to-1 correspondence between solutions to the new instance and the old. More than that, the shared variables between the instances will share values within their satisfying assignments. This would allow one to easily calculate solutions to the old instance using solutions to the new instance. This defines a sense in which such transformed instances are "the same".
+There is a certain sense that this problem is equivalent to the old one. The new problem is satisfiable if and only if the old one is. Further, the values of unshared variables can be uniquely determined by variables that are shared. As such, there is a 1-to-1 correspondence between solutions to the new instance and the old. More than that, the shared variables between the instances will share values within their satisfying assignments. This would allow one to easily calculate solutions to the old instance using solutions to the new instance. This defines a sense in which such transformed instances are \say{the same}.
 
 Some previously mentioned techniques simplify problems. For example, fusing the boolean SAT clauses $x \vee y \vee \neg z$ and $z \vee w \vee v$ into $x \vee y \vee w \vee v$, using resolution as described in section \ref{sec:two-sat}, so long as $z$ is not mentioned in any other clause.
 
@@ -51,7 +51,7 @@ We can further use this idea to reason about our three-coloring example;
 \end{tikzpicture}
 \end{center}
 
-Given the naive interpretation of "the same" semantics, it seems like no simplification can be done. If we want to preserve semantics on the nose, then we must preserve nodes and can seemingly only change the edges. But, if we instead preserve semantics in the broader sense just described, we can make an immediate observation. The $x_1$ and $x_3$ nodes will have their color uniquely determined by the only two other nodes attached to them. This means we can eliminate them without changing the number of colorings. This gives us;
+Given the naive interpretation of \say{the same} semantics, it seems like no simplification can be done. If we want to preserve semantics on the nose, then we must preserve nodes and can seemingly only change the edges. But, if we instead preserve semantics in the broader sense just described, we can make an immediate observation. The $x_1$ and $x_3$ nodes will have their color uniquely determined by the only two other nodes attached to them. This means we can eliminate them without changing the number of colorings. This gives us;
 
 \begin{center}
 \begin{tikzpicture}
@@ -65,7 +65,7 @@ Given the naive interpretation of "the same" semantics, it seems like no simplif
 \end{tikzpicture}
 \end{center}
 
-We can further note that $x_2$ also has its color uniquely determined by the two nodes it's connected to. This, too, allows its elimination, leaving;
+We can further note that $x_2$ also has its color uniquely determined by the two nodes it is connected to. This, too, allows its elimination, leaving;
 
 \begin{center}
 \begin{tikzpicture}
@@ -78,7 +78,7 @@ We can further note that $x_2$ also has its color uniquely determined by the two
 
 This is now as simple as it can be. We can pick any pair of distinct colors for this pair, and it will determine a unique coloring for our original graph. This implies, in particular, that the number of colorings in our original graph is the same as the number of distinct color pairs; 6.
 
-This idea can be nicely captured by string-diagram representations of CSP instances. In it, each relation becomes a node on a graph and each variable becomes a string connecting nodes. Variables mentioned by three or more relations get combined into "spider" nodes, represented by a lack of a node marker. This string diagram representation is a kind of duel of the other graph representation we've been using; swapping edges and nodes. The utility of this representation can be seen in the rewrite rule for our factoring example;
+This idea can be nicely captured by string-diagram representations of CSP instances. In it, each relation becomes a node on a graph and each variable becomes a string connecting nodes. Variables mentioned by three or more relations get combined into "spider" nodes, represented by a lack of a node marker. This string diagram representation is a kind of duel of the other graph representation we have been using; swapping edges and nodes. The utility of this representation can be seen in the rewrite rule for our factoring example;
 
 \begin{center}
 \begin{tikzpicture}[every label/.style={draw=none, text=black}]
@@ -216,7 +216,7 @@ We can, further, draw the transformation rule eliminating nodes for graph colori
 \end{tikzpicture}
 \end{center}
 
-Repeatedly applying this to our string diagram, we'd get the sequence;
+Repeatedly applying this to our string diagram, we would get the sequence;
 
 \begin{center}
 \begin{tikzpicture}
@@ -331,7 +331,7 @@ Tactics along these lines are studied widely within the subject of string diagra
 
 The concepts from the previous section can be generalized to a notion of redundancy elimination. When solving a CSP, we care less about preserving the number of solutions than we do finding some solution. A transformation that preserves satisfiability, but not solution number, is fine for most purposes.
 
-In general, we can ask if, given an instance $F \wedge C$, if removing $C$ preserves satisfiability. If so, then $C$ is redundant in the instance. This is all we need if we only care about the existence of a satisfying assignment. However, we generally actually want to find a solution. The most common method to reconstruct solutions through redundancy elimination are special cases of what's called "propagation redundancy".
+In general, we can ask if, given an instance $F \wedge C$, if removing $C$ preserves satisfiability. If so, then $C$ is redundant in the instance. This is all we need if we only care about the existence of a satisfying assignment. However, we generally actually want to find a solution. The most common method to reconstruct solutions through redundancy elimination are special cases of what is called \say{propagation redundancy}.
 
 We can assess whether some clause is propagation redundant with respect to CSP instances by asking about assignments blocked by that clause. For example, if we have the clause $x = 1$, then the assignment $\langle x \rightarrow 0\rangle$ is blocked by that clause. As another example, the clause $\neg x \vee y \vee z$ blocks the assignment $\langle x \rightarrow 1, y \rightarrow 0, z \rightarrow 0\rangle$.
 
@@ -347,7 +347,7 @@ As a basic example, consider this 3-SAT problem;
     (x \lor y) \land (x \lor z) \land (\neg x \lor y \lor z) \land x
 \end{equation}
 
-we may observe that $C = x$ blocks the assignment $\alpha = \langle x \rightarrow 0\rangle$. If we remove this clause, we'd have.
+we may observe that $C = x$ blocks the assignment $\alpha = \langle x \rightarrow 0\rangle$. If we remove this clause, we would have.
 
 \begin{equation}\label{equation:two-sat-example-pt1-2}
     F = (x \lor y) \land (x \lor z) \land (\neg x \lor y \lor z)
@@ -365,7 +365,7 @@ We may observe that the only other partial assignment is $\omega = \langle x \ri
     F_{|\omega} = y \lor z
 \end{equation}
 
-It's not hard to see that every satisfying assignment of $F_{|\alpha}$ also satisfies $F_{|\omega}$. If we have a satisfying assignment for $F$, there are two cases. Either it already also satisfies $F \wedge C$, in which case we're done, or it only satisfies $F$. As an example of the latter case, take the assignment $\langle x \rightarrow 0, y \rightarrow 1, z \rightarrow 1\rangle$. In the latter case, it must be a satisfying assignment of $F_{|\alpha}$. Since the sub-assignment $\langle y \rightarrow 1, z \rightarrow 1\rangle$ also satisfies $F_{|\omega}$, we can replace the $\alpha$ sub-assignment with $\omega$, getting $\langle x \rightarrow 1, y \rightarrow 1, z \rightarrow 1\rangle$ which satisfies $F \wedge C$.
+it is not hard to see that every satisfying assignment of $F_{|\alpha}$ also satisfies $F_{|\omega}$. If we have a satisfying assignment for $F$, there are two cases. Either it already also satisfies $F \wedge C$, in which case we are done, or it only satisfies $F$. As an example of the latter case, take the assignment $\langle x \rightarrow 0, y \rightarrow 1, z \rightarrow 1\rangle$. In the latter case, it must be a satisfying assignment of $F_{|\alpha}$. Since the sub-assignment $\langle y \rightarrow 1, z \rightarrow 1\rangle$ also satisfies $F_{|\omega}$, we can replace the $\alpha$ sub-assignment with $\omega$, getting $\langle x \rightarrow 1, y \rightarrow 1, z \rightarrow 1\rangle$ which satisfies $F \wedge C$.
 
 As a second example, consider three coloring on the following graph;
 
@@ -421,7 +421,7 @@ We may identify the following;
 
 and further, we may observe that $F_{|\alpha} = F_{|\omega}$, meaning that any assignment satisfying one will also satisfy the other. That $\omega$ will satisfy $F \wedge C$ and that analogous assignments will exist for all blocked clauses implies that $C$ is propagation redundant.
 
-In theory, we only need to find one $\omega$ as an alternative to the blocked $\alpha$ and swap to it if needed. However, finding such can be nontrivial. In general, judging if a clause is propagation redundant is, itself, an NP-complete problem. As such, much work has been done to characterize clauses whose propagation redundancy is efficiently detectable. The most popular of these are the so-called "blocked clauses" and their variants. Alternatively, some recent methods, such as the so-called "satisfaction-driven clause learning" methodology, recursively call an SAT solver to detect redundancy.
+In theory, we only need to find one $\omega$ as an alternative to the blocked $\alpha$ and swap to it if needed. However, finding such can be nontrivial. In general, judging if a clause is propagation redundant is, itself, an NP-complete problem. As such, much work has been done to characterize clauses whose propagation redundancy is efficiently detectable. The most popular of these are the so-called \say{blocked clauses} and their variants. Alternatively, some recent methods, such as the so-called "satisfaction-driven clause learning" methodology, recursively call an SAT solver to detect redundancy.
 
 There is a further generalization of redundancy. Instead of asking for every assignment of $F_{|\alpha}$ to satisfy $F_{|f(\alpha)}$, we may instead ask for a function, $f$, over partial assignments such that any assignment $\rho$ of $F_{|\alpha}$ is also an assignment of $F_{|f(\rho, \alpha)}$, and, of course, $f(\rho, \alpha)$ should satisfy the redundant clause $C$. This allows $\omega$ to vary based on what assignment for $F$ we found, and $f$ is exactly the method to reconstruct assignments for larger problems from smaller sub-problems. Using this, we can establish $x_3 \neq x_4$ as redundant in our previous example with 
 
@@ -435,13 +435,13 @@ Note that $x_3 \neq x_4$ is not propagation redundant since, for example, the bl
     F_{|\alpha} = x_1 \neq x_2 \wedge x_2 \neq B,
 \end{equation}
 
-and we won't be able to find an $\omega$ such that every assignment of $F_{\alpha}$ is also an assignment of $F_{\omega}$. If we try, for example, $\omega = \langle x_3 \rightarrow R, x_4 \rightarrow B\rangle$, then
+and we will not be able to find an $\omega$ such that every assignment of $F_{\alpha}$ is also an assignment of $F_{\omega}$. If we try, for example, $\omega = \langle x_3 \rightarrow R, x_4 \rightarrow B\rangle$, then
 
 \begin{equation}
     F_{|\omega} = x_1 \neq x_2 \wedge x_2 \neq R \neq B
 \end{equation}
 
-which is clearly more, not less, specific than $F_{|\alpha}$. Further, if we try $\omega = \langle x_3 \rightarrow R, x_4 \rightarrow G\rangle$, we'd get
+which is clearly more, not less, specific than $F_{|\alpha}$. Further, if we try $\omega = \langle x_3 \rightarrow R, x_4 \rightarrow G\rangle$, we would get
 
 \begin{equation}
     F_{|\omega} = x_1 \neq x_2 \wedge x_2 \neq R \neq G
@@ -490,13 +490,13 @@ splitting $x_2$ would not split the problem, but it would make it entirely linea
 
 \subsection{Bound Variable Elimination}\label{sec:var-elim}
 
-We can utilize the resolution method mentioned in section \ref{sec:two-sat} to eliminate variables in general. Restricted to the boolean SAT setting, if we want to eliminate a variable, $x$, we resolve all clauses where $x$ appears positively with every clause where it appears negatively. This creates the "clause distribution" of the variable. We then delete all the clauses mentioning $x$ and replace them with the clause distribution. As an example, consider the following;
+We can utilize the resolution method mentioned in section \ref{sec:two-sat} to eliminate variables in general. Restricted to the boolean SAT setting, if we want to eliminate a variable, $x$, we resolve all clauses where $x$ appears positively with every clause where it appears negatively. This creates the \say{clause distribution} of the variable. We then delete all the clauses mentioning $x$ and replace them with the clause distribution. As an example, consider the following;
 
 \begin{equation}
     (x \vee y) \wedge (\neg y \vee z) \wedge (w \vee y) \wedge (\neg y \vee w)
 \end{equation}
 
-Let's eliminate $y$. Since $y$ appears in all these clauses, we'll be replacing the whole instance. We can create the following table showing the clause distribution:
+Let us eliminate $y$. Since $y$ appears in all these clauses, we will be replacing the whole instance. We can create the following table showing the clause distribution:
 
 \begin{table}[h]
     \centering
@@ -540,7 +540,7 @@ We may even extend this into the infinite domain. If our domain is the integers,
 \frac{p < 0 \rightarrow C_1 \quad p \geq 0 \rightarrow C_2}{C_1 \lor C_2}
 \end{equation}
 
-Though it becomes more complicated as the domain grows, there's a natural extension of clause distribution. Applicability will depend on the extent we may interpret a clause as an implication of the appropriate form. If we take three-coloring as an example, we only have one kind of clause, of the form $x \neq y$. We can rephrase this as;
+Though it becomes more complicated as the domain grows, there is a natural extension of clause distribution. Applicability will depend on the extent we may interpret a clause as an implication of the appropriate form. If we take three-coloring as an example, we only have one kind of clause, of the form $x \neq y$. We can rephrase this as;
 
 \begin{align}
     (x = R) &\rightarrow (y = G \vee y = B)\ \wedge \nonumber \\
@@ -548,11 +548,11 @@ Though it becomes more complicated as the domain grows, there's a natural extens
     (x = B) &\rightarrow (y = R \vee y = G)\label{eq:multiline}
 \end{align}
 
-This will expand the formula, but put every clause in a form that's resolution compatible. Similarly, there is a form that places $y$ in the antecedent. Using this form, we may eliminate a variable, although we will be switching to a more flexible CSP since our clause distribution will not exclusively contain clauses of the form $x \neq y$.
+This will expand the formula, but put every clause in a form that is resolution compatible. Similarly, there is a form that places $y$ in the antecedent. Using this form, we may eliminate a variable, although we will be switching to a more flexible CSP since our clause distribution will not exclusively contain clauses of the form $x \neq y$.
 
 \subsection{Cost Preservation}\label{sec:cost-preservation}
 
-We've talked mostly about satisfaction, but, for the purposes of optimization, additional steps must be taken to ensure costs are preserved by transformations. Consider the following problem;
+We have talked mostly about satisfaction, but, for the purposes of optimization, additional steps must be taken to ensure costs are preserved by transformations. Consider the following problem;
 
 \begin{equation}
     (x \vee y) \wedge (\neg y \vee z) \wedge (w \vee y) \wedge (\neg y \vee w) \wedge (\neg x \vee \neg w) \wedge \neg w
@@ -560,15 +560,15 @@ We've talked mostly about satisfaction, but, for the purposes of optimization, a
 
 Assume our goal is to maximize the number of satisfied clauses. A maximum can be reached by assigning $\langle x \rightarrow 0, y \rightarrow 1, z \rightarrow 1, w \rightarrow 0 \rangle$, which satisfies 5 clauses, but this is not the only assignment that does this. 
 
-It's entirely possible to eliminate all the variables using bound variable elimination. This will merely tell us that the statement is unsatisfiable.
+it is entirely possible to eliminate all the variables using bound variable elimination. This will merely tell us that the statement is unsatisfiable.
 
-If we used unit propagation to eliminate $w$, we'd get
+If we used unit propagation to eliminate $w$, we would get
 
 \begin{equation}
     (x \vee y) \wedge (\neg y \vee z) \wedge y \wedge \neg y
 \end{equation}
 
-This is also not satisfiable. The assignment $\langle x \rightarrow 1, y \rightarrow 0, z \rightarrow 1 \rangle$ satisfies 3 clauses, which is the max, though this is not the only way to do this. Unfortunately, this doesn't tell us anything about the maximum satisfiability of the original problem. If we reconstruct an assignment for the full problem from this by assigning $\langle w \rightarrow 0 \rangle$ (since the original unit clause negated $w$), we'd only satisfy 4 of the original clauses, which is suboptimal.
+This is also not satisfiable. The assignment $\langle x \rightarrow 1, y \rightarrow 0, z \rightarrow 1 \rangle$ satisfies 3 clauses, which is the max, though this is not the only way to do this. Unfortunately, this does not tell us anything about the maximum satisfiability of the original problem. If we reconstruct an assignment for the full problem from this by assigning $\langle w \rightarrow 0 \rangle$ (since the original unit clause negated $w$), we would only satisfy 4 of the original clauses, which is suboptimal.
 
 How do we fix this?
 
@@ -592,7 +592,7 @@ We can then eliminate $x$, getting
 (\neg y\lor z\lor l_2)\land (y\lor l_1\lor y\lor l_3\lor l_5)\land (y\lor l_3\lor l_6)\land (y\lor l_1\lor \neg y\lor l_4\lor l_5)\land (\neg y\lor l_4\lor l_6)
 \end{equation}
 
-We can remove the fourth of these clauses, since it's trivial, and simplify the second to get;
+We can remove the fourth of these clauses, since it is trivial, and simplify the second to get;
 
 \begin{equation}
 (\neg y\lor z\lor l_2)\land (y\lor l_1 \lor l_3\lor l_5)\land (y\lor l_3\lor l_6) \land (\neg y\lor l_4\lor l_6)
@@ -616,13 +616,13 @@ and this can be cleaned up into;
     (l_1 \lor l_3\lor l_4\lor l_5\lor l_6)\land (l_3 \lor l_4\lor l_6)
 \end{equation}
 
-We may also notice that the second clause is more specific than the first, meaning we can drop the first clause without changing semantics (this is called "clause subsumption"), also eliminating $l_1$ and $l_5$ in the process. This gets;
+We may also notice that the second clause is more specific than the first, meaning we can drop the first clause without changing semantics (this is called \say{clause subsumption}), also eliminating $l_1$ and $l_5$ in the process. This gets;
 
 \begin{equation}
     l_3 \lor l_4\lor l_6
 \end{equation}
 
-This gives us a full characterization of what we need to maximize satisfiability. We must have one of the clauses labeled by one of these to be false. If we, for example, choose $l_4$ to be the failing clause, then we are forced to assign $\langle y \rightarrow 1, w \rightarrow 0\rangle$, since that's the only assignment blocked by our fourth clause, $\neg y \vee w$. Removing this clause and substituting the blocked assignment, we'd get a formula that must be satisfiable. In this case, we'd get;
+This gives us a full characterization of what we need to maximize satisfiability. We must have one of the clauses labeled by one of these to be false. If we, for example, choose $l_4$ to be the failing clause, then we are forced to assign $\langle y \rightarrow 1, w \rightarrow 0\rangle$, since that is the only assignment blocked by our fourth clause, $\neg y \vee w$. Removing this clause and substituting the blocked assignment, we would get a formula that must be satisfiable. In this case, we would get;
 
 \begin{equation}
     z
@@ -634,7 +634,7 @@ See \citep{belov2013sat} and follow-up work for more information on this method.
 
 \subsection{Decomposition in Integer Linear Programming}\label{sec:ilp-blocks}
 
-The most popular method for solving integer programming problems involves decomposing the problem into a smaller problem. There are many ways to do this; this section will focus on the "branch and bound" method since it's the most popular.
+The most popular method for solving integer programming problems involves decomposing the problem into a smaller problem. There are many ways to do this; this section will focus on the "branch and bound" method since it is the most popular.
 
 Consider the following problem;
 
@@ -654,7 +654,7 @@ and
     x_1 \geq 2 \wedge 2x_1 + 3x_2 \leq 5 \wedge 4x_1 + 9x_2 \leq 12
 \end{equation}
 
-One of these smaller regions is guaranteed to have the true, integer maximum. If we solve the relaxed version of these problems, we get the maximum at $x_1 = 1$ and $x_2 = \frac{8}{9}$ for the first problem, and at $x_1 = 2$ and $x_2 = \frac{1}{3}$ for the second. $x_2$ isn't an integer for either of these, so we can cut on it, creating four sub-problems. In this case, the cut on both sub-problems will approximate $x_2$ down to $0$ and up to $1$, but, in general, cutting the same variable on different sub-problems will produce different approximations. In this case, our sub-problems are;
+One of these smaller regions is guaranteed to have the true, integer maximum. If we solve the relaxed version of these problems, we get the maximum at $x_1 = 1$ and $x_2 = \frac{8}{9}$ for the first problem, and at $x_1 = 2$ and $x_2 = \frac{1}{3}$ for the second. $x_2$ is not an integer for either of these, so we can cut on it, creating four sub-problems. In this case, the cut on both sub-problems will approximate $x_2$ down to $0$ and up to $1$, but, in general, cutting the same variable on different sub-problems will produce different approximations. In this case, our sub-problems are;
 
 \begin{equation}
     x_1 \leq 1 \wedge x_2 = 0 \wedge 2x_1 + 3x_2 \leq 5 \wedge 4x_1 + 9x_2 \leq 12
@@ -672,9 +672,9 @@ One of these smaller regions is guaranteed to have the true, integer maximum. If
     x_1 \geq 2 \wedge x_2 \geq 1 \wedge 2x_1 + 3x_2 \leq 5 \wedge 4x_1 + 9x_2 \leq 12
 \end{equation}
 
-As it turns out, the last of these problems is unsatisfiable, so we throw it away. The first of these problems reaches its relaxed max at $x_1 = 1$ and $x_2 = 0$, with a max value of $5$. Since the relaxed max is an integer solution, this is also the max when restricted to integers. This isn't necessarily the global max, but we'll mark it down as the best possible solution found so far.
+As it turns out, the last of these problems is unsatisfiable, so we throw it away. The first of these problems reaches its relaxed max at $x_1 = 1$ and $x_2 = 0$, with a max value of $5$. Since the relaxed max is an integer solution, this is also the max when restricted to integers. This is not necessarily the global max, but we will mark it down as the best possible solution found so far.
 
-The other two problems reach a max at $x_1 = \frac{3}{4}$ and $x_2 = 0$ and $x_1 = \frac{5}{2}$ and $x_2 = 1$, respectively. These have a max value of $\frac{47}{4}$ and $\frac{25}{2}$, respectively. If either of these were less than $5$, we could eliminate them since they could not possibly have better integer solutions than what we've found so far, however, both are larger so we must continue. Integer approximating values of $x_1$ produces the four sub-problems;
+The other two problems reach a max at $x_1 = \frac{3}{4}$ and $x_2 = 0$ and $x_1 = \frac{5}{2}$ and $x_2 = 1$, respectively. These have a max value of $\frac{47}{4}$ and $\frac{25}{2}$, respectively. If either of these were less than $5$, we could eliminate them since they could not possibly have better integer solutions than what we have found so far, however, both are larger so we must continue. Integer approximating values of $x_1$ produces the four sub-problems;
 
 \begin{equation}
     x_1 = 0 \wedge x_2 \geq 1 \wedge 2x_1 + 3x_2 \leq 5 \wedge 4x_1 + 9x_2 \leq 12
@@ -692,7 +692,7 @@ The other two problems reach a max at $x_1 = \frac{3}{4}$ and $x_2 = 0$ and $x_1
     x_1 = 2 \wedge x_2 = 0 \wedge 2x_1 + 3x_2 \leq 5 \wedge 4x_1 + 9x_2 \leq 12
 \end{equation}
 
-The middle two problems are unsatisfiable, so we throw them away. The last problem has a relaxed integer solution at $x_1 = 2$ and $x_2 = 0$, with a value of 10; so that's our new best found so far. That first problem reaches a relaxed max at $x_1 = 0$ and $x_2 = \frac{4}{3}$. Its max value is $\frac{32}{3}$, which is more than $10$, so we continue. We cut on that first problem to get two sub-problems;
+The middle two problems are unsatisfiable, so we throw them away. The last problem has a relaxed integer solution at $x_1 = 2$ and $x_2 = 0$, with a value of 10; so that is our new best found so far. That first problem reaches a relaxed max at $x_1 = 0$ and $x_2 = \frac{4}{3}$. Its max value is $\frac{32}{3}$, which is more than $10$, so we continue. We cut on that first problem to get two sub-problems;
 
 \begin{equation}
     x_1 = 0 \wedge x_2 = 1 \wedge 2x_1 + 3x_2 \leq 5 \wedge 4x_1 + 9x_2 \leq 12

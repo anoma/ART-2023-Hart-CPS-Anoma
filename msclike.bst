@@ -22,7 +22,7 @@
 % like `plain' instead.  Mary-Claire van Leunen (A Handbook for Scholars,
 % Knopf, 1979) argues convincingly that a style like `plain' encourages better
 % writing than one like `apalike'.  Furthermore the strongest arguments for
-% using an author-date style like `apalike'---that it's "the most practical"
+% using an author-date style like `apalike'---that it is "the most practical"
 % (The Chicago Manual of Style, University of Chicago Press, thirteenth
 % edition, 1982, pages 400--401)---fall flat on their face with the new
 % computer-typesetting technology.  For instance page 401 anachronistically
