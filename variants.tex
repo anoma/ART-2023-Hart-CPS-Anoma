@@ -4,7 +4,7 @@ While constraint satisfaction is a powerful paradigm for reasoning about problem
 
 \subsection{Promise CSP}\label{sec:promise}
 
-The Promise Constraint Satisfaction Problem is an attempt to characterize an approximation of CSPs by assuming we already have a solution to a CSP and want to use it to solve another CSP faster. Formally, a PCSP consists of a pair of relational structures, $A$ and $B$, and a homomorphism between them. An instance of a PCSP consists of a relational structure representing a query, $I$, and asks for a homomorphism from $I$ to $B$, assuming we know that some homomorphism from $I$ onto $A$ already exists. We don't assume a particular homomorphism, just that some homomorphism exists.
+The Promise Constraint Satisfaction Problem is an attempt to characterize an approximation of CSPs by assuming we already have a solution to a CSP and want to use it to solve another CSP faster. Formally, a PCSP consists of a pair of relational structures, $A$ and $B$, and a homomorphism between them. An instance of a PCSP consists of a relational structure representing a query, $I$, and asks for a homomorphism from $I$ to $B$, assuming we know that some homomorphism from $I$ onto $A$ already exists. We do not assume a particular homomorphism, just that some homomorphism exists.
 
 A good example is the "1-in-3-SAT versus NAE-3-SAT" problem. The domain is the booleans. We first have the CSP, $T$, defined by the 1-in-3 relation.
 
@@ -18,13 +18,13 @@ Secondly, we have the not-all-equal CSP, $H_2$, defined as having the sole relat
    \{(x, y, z)\ |\ \neg (x = y = z) \}
 \end{equation}
 
-Obviously, there's a canonical homomorphism from T onto B mapping the satisfying triples of $T$ into $H_2$. What's interesting about this problem is that T and B are both known to be NP-complete. Despite this, the promise going from T to B can be solved in polynomial time. To illustrate how this can be done, take the following CSP instance;
+Obviously, there is a canonical homomorphism from T onto B mapping the satisfying triples of $T$ into $H_2$. What is interesting about this problem is that T and B are both known to be NP-complete. Despite this, the promise going from T to B can be solved in polynomial time. To illustrate how this can be done, take the following CSP instance;
 
 \begin{equation}
     R(x_1, x_2, x_3) \wedge R(x_2, x_4, x_5) \wedge R(x_1, x_3, x_6) \wedge R(x_1, x_5, x_6)
 \end{equation}
 
-The promise CSP problem tells us that we know there exists some homomorphism from this into $T$, which is to say, interpreting $R$ as the 1-in-3 relation here will have some satisfying assignment. Indeed, such an assignment \textit{does} exist in this case; however, we don't actually know what this assignment is, just that it exists. In general, finding such an assignment is very hard; that we know some assignment exists acts as a structural restriction on the problem that we may exploit to find a homomorphism in $H_2$, which is, itself, usually hard.
+The promise CSP problem tells us that we know there exists some homomorphism from this into $T$, which is to say, interpreting $R$ as the 1-in-3 relation here will have some satisfying assignment. Indeed, such an assignment \textit{does} exist in this case; however, we do not actually know what this assignment is, just that it exists. In general, finding such an assignment is very hard; that we know some assignment exists acts as a structural restriction on the problem that we may exploit to find a homomorphism in $H_2$, which is, itself, usually hard.
 
 How can we use this fact to derive a solution in $H_2$? First, we can note that $T$ can be relaxed to this problem over the integers;
 
@@ -32,7 +32,7 @@ How can we use this fact to derive a solution in $H_2$? First, we can note that 
     x_1 + x_2 + x_3 = 1 \wedge x_2 + x_4 + x_5 = 1 \wedge x_1 + x_3 + x_6 = 1 \wedge x_1 + x_5 + x_6 = 1
 \end{equation}
 
-We've just replaced $R$ with the relation $x + y + z = 1$. If a solution in $T$ exists, then this system of linear equations has a solution. Furthermore, this is a relaxation since a solution to this system does not necessarily give us a solution to $T$. We can use an algorithm such as Gaussian Elimination to get a solution to any linear system over the integers efficiently if it exists. For example, we have the following assignment satisfying the linear equations;
+We have just replaced $R$ with the relation $x + y + z = 1$. If a solution in $T$ exists, then this system of linear equations has a solution. Furthermore, this is a relaxation since a solution to this system does not necessarily give us a solution to $T$. We can use an algorithm such as Gaussian Elimination to get a solution to any linear system over the integers efficiently if it exists. For example, we have the following assignment satisfying the linear equations;
 
 \begin{equation}
     \langle x_1 \rightarrow 5, x_2 \rightarrow -47, x_3 \rightarrow 43, x_4 \rightarrow 5, x_5 \rightarrow 43, x_6 \rightarrow -47 \rangle
@@ -44,7 +44,7 @@ With this in hand, we can transform this assignment for the linear equations int
     \langle x_1 \rightarrow 1, x_2 \rightarrow 0, x_3 \rightarrow 1, x_4 \rightarrow 1, x_5 \rightarrow 1, x_6 \rightarrow 0 \rangle
 \end{equation}
 
-Substituting this into $H_2$, we'd have
+Substituting this into $H_2$, we would have
 
 \begin{equation}
     \neg (1 = 0 = 1) \wedge \neg (0 = 1 = 1) \wedge \neg (1 = 1 = 0) \wedge \neg (1 = 1 = 0)
@@ -52,9 +52,9 @@ Substituting this into $H_2$, we'd have
 
 which is clearly satisfied. We can also clearly read off a solution for $T$, but this will not usually be the case.
 
-This method is called "making a sandwich", where $T$ and $H_2$ are the metaphorical bread and linear equations over $\mathbb{Z}$ is the metaphorical filling. This method is currently the most common for creating polytime PCSPs. Interestingly, it's been proven that there are no polytime sandwiches between $T$ and $H_2$ with a finite domain; one must transfer to an infinite domain.
+This method is called \say{making a sandwich}, where $T$ and $H_2$ are the metaphorical bread and linear equations over $\mathbb{Z}$ is the metaphorical filling. This method is currently the most common for creating polytime PCSPs. Interestingly, it is been proven that there are no polytime sandwiches between $T$ and $H_2$ with a finite domain; one must transfer to an infinite domain.
 
-PCSPs are still a very new and understudied subject. Few general results are known, and many of the most effective techniques for other CSP variants haven't worked in this domain. Still, it is a very active area of research. For a modern overview of the subject, see \citep{krokhin2022invitation}.
+PCSPs are still a very new and understudied subject. Few general results are known, and many of the most effective techniques for other CSP variants have not worked in this domain. Still, it is a very active area of research. For a modern overview of the subject, see \citep{krokhin2022invitation}.
 
 \subsection{Quantified CSP}\label{sec:quantified}
 
@@ -70,9 +70,9 @@ To solve this problem, we are effectively building functions for each existentia
     \forall x_1, \forall x_3, (\neg x_1 \vee \neg f_2(x_1) \vee x_3) \wedge (\neg f_2(x_1) \vee x_3 \vee f_4(x_1, x_3))
 \end{equation}
 
-true. This process of eliminating existential quantifiers via function synthesis is called "Skolemization", and such functions are the analog of a satisfying assignment for QCSPs.
+true. This process of eliminating existential quantifiers via function synthesis is called \say{Skolemization}, and such functions are the analog of a satisfying assignment for QCSPs.
 
-In the finite domain case, these functions can always be described as decision trees that split on each variable; and that's how they're usually presented. In our case, if we define
+In the finite domain case, these functions can always be described as decision trees that split on each variable; and that is how they are usually presented. In our case, if we define
 
 \begin{equation}
     f_2(x) := \neg x
@@ -82,7 +82,7 @@ In the finite domain case, these functions can always be described as decision t
     f_4(x, y) := \neg y
 \end{equation}
 
-then we'd have
+then we would have
 
 \begin{equation}
     \forall x_1, \forall x_3, (\neg x_1 \vee \neg \neg x_1 \vee x_3) \wedge (\neg \neg x_1 \vee x_3 \vee \neg x_3)
@@ -92,7 +92,7 @@ which is true by excluded middle.
 
 QSAT, the quantified version of 3-SAT, is PSpace-Complete, giving it more expressive power and allowing any problem in PSpace to be efficiently translated into it. QCSP more generally is an active area of research that is not as well developed as CSP, though it is generally better understood than PCSP.
 
-There is a further extension of QSAT called "dependency quantified SAT". In this setting, quantifiers are allowed to specify exactly which variables they depend on, instead of assuming they depend on all universally quantified variables appearing beforehand. Despite seeming to be similar in nature to QSAT, DQSAT is NEXPTIME-Complete, giving it significantly more expressive power. Unlike with boolean SAT, dependency-quantified versions of CSPs in general don't seem to appear in the literature.
+There is a further extension of QSAT called "dependency quantified SAT". In this setting, quantifiers are allowed to specify exactly which variables they depend on, instead of assuming they depend on all universally quantified variables appearing beforehand. Despite seeming to be similar in nature to QSAT, DQSAT is NEXPTIME-Complete, giving it significantly more expressive power. Unlike with boolean SAT, dependency-quantified versions of CSPs in general do not seem to appear in the literature.
 
 For a modern overview of QSAT, see chapters 29-31 of \citep{biere2009handbook}. We cannot find an overview of QCSPs in general which is worth recommending, though the introduction of \citep{zhuk2023complete} gives pointers to significant work across this area in addition to being an important recent paper on the topic.
 
@@ -107,21 +107,30 @@ In the most basic version of the problem, we assign each clause, $c_i$, a boolea
     \sum_i b_i,
 \end{equation}
 
-which will reach its maximum value if all clauses can be satisfied. We will often want to assign more importance to some clauses over others. To do this, we associate, with each clause, a positive, real weight, $w_i$. Such problems will often be called "Weighted CSPs", and seek to maximize
+which will reach its maximum value if all clauses can be satisfied. We will often want to assign more importance to some clauses over others. To do this, we associate, with each clause, a positive, real weight, $w_i$. Such problems will often be called \say{Weighted CSPs}, and seek to maximize
 
 \begin{equation}
     \sum_i w_i b_i.
 \end{equation}
 
-More often than not there will be more complex weighting schemes. The most common is to allow the weight of a clause to be $-\infty$ in the case that it's false, essentially forcing any solution to satisfy that clause. Such "must have" clauses are common in many applications, and are often called "hard". Appropriately, non-hard clauses are often called "soft" in the same context. Such problems are called "Partial MaxCSPs".
+More often than not there will be more complex weighting schemes. The most common is to allow the weight of a clause to be $-\infty$ in the case that it is false, essentially forcing any solution to satisfy that clause. Such \say{must have} clauses are common in many applications, and are often called "hard". Appropriately, non-hard clauses are often called "soft" in the same context. Such problems are called \say{Partial MaxCSPs}.
 
 \begin{remark}
 There are further weighting schemes for more sophisticated applications, such as those mapping clauses onto complex numbers or some other metric, though such are outside the scope we consider here. See, for example, \citep{cai2017complexity}.
 \end{remark}
 
-MaxCSPs generally arise when we have over-constrained problems. We have \$100 and want to buy \$200 worth of stuff. Each thing we want to buy would become a constraint stating that we bought the thing, and there would be a further "must have" constraint limiting the total spent money to \$100. This forces some of the "did buy" constraints to fail, and the actual choice of what to buy must be done by weighing our purchasing options using some utility function. 
+MaxCSPs generally arise when we have over-constrained problems. We have \$100 and want to buy \$200 worth of stuff. Each thing we want to buy would become a constraint stating that we bought the thing, and there would be a further \say{must have} constraint limiting the total spent money to \$100. This forces some of the \say{did buy} constraints to fail, and the actual choice of what to buy must be done by weighing our purchasing options using some utility function. 
 
-MaxCSPs also allow us to deal with conflicting requirements. A common one is "best price" and "best performance". One can almost never have both, so some compromise must be made, weighing price constraints and performance constraints in order to judge proposed solutions. This specific example may be modeled by having a gradient of constraints. For price, we might have a set of constraints stating "price was less than x" for a wide swath of xs. The lower the price is, the more of these constraints are satisfied. Continuous optimization is dealt with more elegantly using constraint optimization rather than maximization. This will be discussed in more detail in section \ref{sec:constraint-ptimization}.
+MaxCSPs also allow us to deal with conflicting requirements. A common one is
+\say{best price} and \say{best performance}. One can almost never have both, so
+some compromise must be made, weighing price constraints and performance
+constraints in order to judge proposed solutions. This specific example may be
+modeled by having a gradient of constraints. For price, we might have a set of
+constraints stating "price was less than x" for a wide swath of xs. The lower
+the price is, the more of these constraints are satisfied. Continuous
+optimization is dealt with more elegantly using constraint optimization rather
+than maximization. This will be discussed in more detail in
+\Cref{sec:constraint-ptimization}.
 
 As an example, consider the following modification of our previous 2-SAT example;
 
@@ -161,7 +170,7 @@ along with, for each variable, $x$, in the problem, the additional constraint
     x \geq 0
 \end{equation}
 
-Incidentally, this constraint implies that the domain is really the natural numbers, but the allowance of negative coefficients suggests using these constraints instead for uniformity, but the semantics doesn't change in either case.
+Incidentally, this constraint implies that the domain is really the natural numbers, but the allowance of negative coefficients suggests using these constraints instead for uniformity, but the semantics does not change in either case.
 
 Utility functions are restricted to linear functions of the variables.
 
@@ -181,7 +190,7 @@ I have elided the constraints forcing $x$ and $y$ to be natural numbers, but kno
 
 Our goal, then, is to find the combination of $x$ and $y$ which maximizes $y$. 
 
-By looking at the second and third clauses, we can restrict the ranges of $x$ and $y$. Obviously, they must both be less than or equal to $12$, but we can be more precise. If we set $y = 0$, then $x$'s maximum value is $4$, according to that second clause. Similarly, setting $x = 0$ tells us that $y$'s maximum value is $4$ by the third clause. This tells us that both integers are between $0$ and $4$. Since we are trying to maximize $y$, let's set $y$ to $4$ and see if we can make it work. The first clause will then restrict $x$ to be either $3$ or $4$ while the second will restrict $x$ to be $0$ or $1$; so $y$ cannot be $4$. If we set $y$ to be $3$, then the first equation will restrict $x$ to $[2, 4]$ while the third restricts $x$ to $[0, 1]$; thus, $y$ cannot be $3$ either. If we now try $y=2$, the first equation will restrict $x$ to $[1, 4]$, the second will restrict $x$ to $[0, 2]$ and the third will restrict $x$ to $[0, 3]$. The intersection of these is $\{1, 2\}$, telling us that $y$ will be at a maximum at $(x, y) = (1, 2)$ and $(x, y) = (2, 2)$.
+By looking at the second and third clauses, we can restrict the ranges of $x$ and $y$. Obviously, they must both be less than or equal to $12$, but we can be more precise. If we set $y = 0$, then $x$'s maximum value is $4$, according to that second clause. Similarly, setting $x = 0$ tells us that $y$'s maximum value is $4$ by the third clause. This tells us that both integers are between $0$ and $4$. Since we are trying to maximize $y$, Let us set $y$ to $4$ and see if we can make it work. The first clause will then restrict $x$ to be either $3$ or $4$ while the second will restrict $x$ to be $0$ or $1$; so $y$ cannot be $4$. If we set $y$ to be $3$, then the first equation will restrict $x$ to $[2, 4]$ while the third restricts $x$ to $[0, 1]$; thus, $y$ cannot be $3$ either. If we now try $y=2$, the first equation will restrict $x$ to $[1, 4]$, the second will restrict $x$ to $[0, 2]$ and the third will restrict $x$ to $[0, 3]$. The intersection of these is $\{1, 2\}$, telling us that $y$ will be at a maximum at $(x, y) = (1, 2)$ and $(x, y) = (2, 2)$.
 
 Integer programming is a widely studied field with a long history of texts giving good coverage. Two examples are the homonymous  \citep{wolsey2020integer} and \citep{michelangelo2014integer}. Also, see section \ref{sec:ilp-blocks} for some more insights into solving techniques in ILP. Also note that ILP often incorporates boolean and continuous variables, creating "Mixed" ILP (MILP).
 
@@ -209,7 +218,7 @@ Note that we can go the other way in the special case of non-mixed integer progr
     U = 3 (x_0 + 2 x_1) + 4 (y_0 + 2 y_1) = 3 x_0 + 6 x_1 + 4 y_0 + 8 y_1
 \end{equation}
 
-These bits can then be used as soft clauses with their coefficients as their weights in a weighted MaxSAT problem. The ILP constraints are then turned into hard MaxSAT constraints, completing the translation. A similar procedure doesn't exist for continuous optimization, making a perfect translation from MILP impossible, though discretization methods, like those described briefly in \ref{sec:max-csp}, can be used for approximation.
+These bits can then be used as soft clauses with their coefficients as their weights in a weighted MaxSAT problem. The ILP constraints are then turned into hard MaxSAT constraints, completing the translation. A similar procedure does not exist for continuous optimization, making a perfect translation from MILP impossible, though discretization methods, like those described briefly in \ref{sec:max-csp}, can be used for approximation.
 
 We could not find a general survey of constraint optimization; though some do exist with a specific emphasis on distributed solving. See, for example, \citep{fioretto2018distributed}. It should be noted that the previously mentioned representation of weighted CSPs as COPs has led some authors to equate the two and use the terms COP and WCSP interchangeably. At the very least, insights from one subject can be used in the other.
 

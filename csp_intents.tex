@@ -1,12 +1,15 @@
 \section{Intents as CSPs}\label{sec:csp-intents}
 
-In this section, we'd like to start giving concrete formalizations of intents using CSPs. We will not aim to thoroughly cover all intent examples but will stick to some basic, non-trivial examples that have been formalized as part of Anoma's "Kudos" sub-project.
+In this section, we start giving concrete formalizations of intents using CSPs.
+We will not aim to thoroughly cover all intent examples but will stick to some
+basic, non-trivial examples that have been formalized as part of Anoma's
+\say{Kudos} sub-project.
 
 \subsection{Intents as ILP programs}\label{sec:ilp-intents}
 
 An intent, for the purposes of our formalization, will be conceptualized as a stated desire to obtain some collection of resources given a stated ability to trade some collection of other resources. Issues like verifiable ownership will not be dealt with here; rather, we concern ourselves only with the collection of stated desires that may be used to formulate trades.
 
-Let's start by considering a specific kind of intent. It consists of partial transactions containing the following data;
+Let us start by considering a specific kind of intent. It consists of partial transactions containing the following data;
 
 \begin{itemize}
     \item $Wh_i$: A float weighing intent $i$.
@@ -47,7 +50,7 @@ Lastly, we must cast this as a constraint optimization problem by asserting a ut
     U := \sum_i Wh_i \left(\left(\sum_r V_{i, r} \text{GOT}_{i, r}\right) - \left(\sum_r V_{i, r} \text{GAVE}_{i, r}\right)\right)
 \end{equation}
 
-This is, of course, just one way of interpreting "best satisfying". In essence, this attempts to get the best aggregate deal, as subjectively interpreted by each intent, weighted by some objective weight indicating the importance of the intent.
+This is, of course, just one way of interpreting \say{best satisfying}. In essence, this attempts to get the best aggregate deal, as subjectively interpreted by each intent, weighted by some objective weight indicating the importance of the intent.
 
 This is, of course, just one kind of intent. To demonstrate an alternative, we may consider a different kind of exclusive-weighted partial transaction. These contain the same data as before, but we can now only trade one collection of resources for another. We are reinterpreting the intents as stating we intend to trade one of a collection of resources, specified by the $H$s, for exactly one from some other collection of resources, specified by $W$s. To formalize this, we now have the following data for each intent;
 
@@ -68,7 +71,7 @@ To enforce exclusivity, we must ensure that, at most one of the $\text{TR}_{i, r
     \sum_r \text{RC}_{i, r} \leq 1
 \end{equation}
 
-and, furthermore, we need to enforce that an intent won't trade something if it doesn't receive something.
+and, furthermore, we need to enforce that an intent will not trade something if it does not receive something.
 
 \begin{equation}
     \sum_r \text{TR}_{i, r} = \sum_r \text{RC}_{i, r}
@@ -97,8 +100,6 @@ With a clear idea to formalize, we can create an actual intent optimizer using a
 
 \begin{betterpython}
 from ortools.linear_solver import pywraplp
-
-# Create the solver
 solver = pywraplp.Solver.CreateSolver('SCIP')
 \end{betterpython}
 
@@ -123,6 +124,7 @@ resources = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
 # Note: 'have_exprs' and 'want_exprs' are lists representing the 'xor' expressions
 # For example, 'have_exprs': [{'a': 3, 'b': 5}, {'a': 2, 'd': 1}] 
 # means "choose (3a or 5b) xor (2a or 1d)"
+
 intents = [
     {'weight': 1.0, 
      'have': [{'a': 3, 'b': 4, 'c': 5}, {'a': 2}, {'e': 3, 'g': 1}],
@@ -194,7 +196,7 @@ This can be implemented as
 
 \begin{betterpython}
 # Declare constraints
-# For each intent, we'll ensure that at most one "have" and one "want"
+# For each intent, we will ensure that at most one "have" and one "want"
 # boolean can be true, and they must coincide.
 for i in range(len(intents)):
     solver.Add(solver.Sum(have_choice_vars[i]) <= 1)
